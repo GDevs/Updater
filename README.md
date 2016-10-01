@@ -2,5 +2,5 @@
 
 Constists out of two Eclipse Projects:
 
-*UpdateServer:*	The Server
+*UpdateServer:*	The Server  
 *Updater:*	The Client
