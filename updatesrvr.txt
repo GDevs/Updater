@@ -1,0 +1,25 @@
+UpdateServer  implements interface1
+	+ processMsg (String msg , String ip, int port)
+	+ sendVersion(String ip, int port)
+	+ recieveVersion()
+	AUfgaben:
+		Update vom ds laden
+		verbidung erwarten
+			-> demand/supply
+	
+	
+	
+	* protokol
+	
+TConnection 
+	
+	
+	
+-----------------
+Codingstyle:
+
+methode{
+	variablendefinitionen
+	
+	logik
+}
