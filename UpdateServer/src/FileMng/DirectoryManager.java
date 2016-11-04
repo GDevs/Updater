@@ -15,23 +15,18 @@ import javax.swing.JFrame;
  *
  */
 public class DirectoryManager implements FilenameFilter {
-	private String homePath = "";
-
+	private String homePath = ""; 
 	private File dir;
-	private boolean isBroken = false; // Represents the state of the programs
-										// directory
+	private boolean isBroken = false; // Represents the state of the directory
 
 	/*
-	 * Checks the integrity of the directory and, if broken or incomplete it
+	 * Checks the integrity of the directory and, if broken or incomplete 
 	 * automatically creates all folders etc.
 	 */
 	public DirectoryManager() {
-		/*
-		 * User has to provide the Directory of the servers objects
-		 */
 		System.out.println("waiting for user input...");
 		
-		dir = askForDirectory();
+		dir = askForDirectory();         // User chosen directory
 		this.homePath = dir.getPath();
 
 		System.out.println("Checking directory-Root-Path");
