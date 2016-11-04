@@ -28,12 +28,6 @@ public class UpdateServer implements Runnable {
 	
 	
 	
-	
-	/*
-	 * Konstruktor
-	 * 
-	 * Aufgaben :     Dateisystem überprüfen/anlegen
-	 */
 	public UpdateServer(int port)
 	{
 		this.port = port;
@@ -46,6 +40,8 @@ public class UpdateServer implements Runnable {
 	
 	public static void main(String[] args)
 	{
-		DirectoryManager cm = new DirectoryManager();
+		DirectoryManager dm = new DirectoryManager();
+		ConnectionManager cm = new ConnectionManager(5555);
+		
 	}
 }

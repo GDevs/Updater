@@ -51,7 +51,7 @@ public class DirectoryManager  {
 			if (check.exists() && check.isDirectory()) 
 			{
 				root = check.listFiles();
-				isComplete();    
+				isRootComplete();    
 			
 				if(!this.isBroken) System.out.println("First Level complete");
 
@@ -68,8 +68,10 @@ public class DirectoryManager  {
 	
 	/*
 	 * Verifies whether root is complete and stores it in this.isBroken 
+	 * 
+	 * known Bug, if a file has the same name as a directory in the same path, the file won't be created. 
 	 */
-	private void isComplete()
+	private void isRootComplete()
 	{
 		System.out.println("Root exists \nChecking integrity of First-Level-Structures");
 		if (root.length == 0) 
@@ -146,6 +148,31 @@ public class DirectoryManager  {
 				}
 			}
 		}
+	}
+	
+	private boolean isBroken()
+	{
+		return this.isBroken;
+	}
+	
+	private boolean createFile(File f)
+	{
+		if(f.exists())
+		{
+			if(f.isDirectory())
+			{
+				return f.mkdirs();
+			}
+			else
+			{
+				try {
+					return f.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return false;
 	}
 
 }
