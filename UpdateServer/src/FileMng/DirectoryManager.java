@@ -37,15 +37,15 @@ public class DirectoryManager implements FilenameFilter {
 													// the child files
 		{
 			System.out.println("Root exists \nChecking integrity of First-Level-Structures");
-
 			home = check.listFiles();
+			System.out.println(home.length);
 			if (home.length == 0) 
 			{
 				this.isBroken = true;
 			}
-			else for (int i = 0; i < home.length; ++i) 
+			else for (int i = 0; i < Paths.FIRST_LEVEL_CHILDS.length; i++) 
 			{
-					int j = i % Paths.FIRST_LEVEL_CHILDS.length;
+					int j = i ;
 
 					System.out.println("Looking for File :" + Paths.FIRST_LEVEL_CHILDS[j]);
 
@@ -61,6 +61,8 @@ public class DirectoryManager implements FilenameFilter {
 					this.isBroken = true;
 				}
 			}
+			
+			if(!this.isBroken) System.out.println("First Level complete");
 
 		/*
 		 * Wenn der Pfad nicht vollständig ist wird er angelegt
@@ -84,7 +86,7 @@ public class DirectoryManager implements FilenameFilter {
 	public static File askForDirectory() {
 		JFrame a = new JFrame();
 		JFileChooser fc = new JFileChooser();
-		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fc.setAcceptAllFileFilterUsed(false);
 		fc.showOpenDialog(null);
 		return fc.getSelectedFile();
@@ -94,11 +96,18 @@ public class DirectoryManager implements FilenameFilter {
 	 * 
 	 */
 	private void rebase() {
-		System.out.println("Directory: " + this.homePath + "  is broken");
+		System.out.println("Directory: " + this.homePath + "  is broken /nRebasing");
 
-		System.out.println("creating: " + Paths.FIRST_LEVEL_CHILDS[0]);
-		File newHome = new File(this.homePath + Paths.FIRST_LEVEL_CHILDS[0]);
-		newHome.mkdir();
+		for(int i = 0; i < Paths.FIRST_LEVEL_CHILDS.length;i++)
+		{
+			System.out.println("creating: " + Paths.FIRST_LEVEL_CHILDS[0]);
+			File newHome = new File(this.homePath + Paths.FIRST_LEVEL_CHILDS[i]);
+			try {
+				newHome.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
