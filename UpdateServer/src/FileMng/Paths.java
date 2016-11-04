@@ -4,5 +4,6 @@ import java.io.File;
 
 public class Paths {
 	static final String sep = File.separator;
+	static final String ROOT_NAME = "ServerUpdater";
 	static final String[] FIRST_LEVEL_CHILDS = {sep+"Updates",sep+"Projects.txt"};
 }

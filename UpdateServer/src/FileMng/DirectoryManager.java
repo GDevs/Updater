@@ -1,25 +1,26 @@
 package FileMng;
 
-import java.awt.FileDialog;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 
 /*
- * Noch zu verbessern: 
+ * To improve: 
  * 
- * Dialog bei falschem directory nach erlaubniss neues anzulegen
+ * Dialog whether rebase should be done
  *
  */
-public class DirectoryManager implements FilenameFilter {
-	private String homePath = ""; 
+public class DirectoryManager  {
+	public static String FILE_HAS_TYP_PATTERN = "([^\\.]{0,}\\.{1,}[^\\.]{0,}){1,}"; //pattern that checks for any '.' in words
+	private String rootPath = ""; 
 	private File dir;
-	private boolean isBroken = false; // Represents the state of the directory
+	private File root[];
+	private boolean isBroken = false; // Represents the state of the directories integrity
 
+	
+	
 	/*
 	 * Checks the integrity of the directory and, if broken or incomplete 
 	 * automatically creates all folders etc.
@@ -28,73 +29,82 @@ public class DirectoryManager implements FilenameFilter {
 		System.out.println("waiting for user input...");
 		
 		dir = askForDirectory();         // User chosen directory
-		this.homePath = dir.getPath();
-
-		System.out.println("Checking directory-Root-Path");
-		File check = new File(this.homePath);
-		File home[];
-		if (check.exists() && check.isDirectory()) // If the home directory
-													// exists proceed to check
-													// the child files
+		if(dir != null)
 		{
-			System.out.println("Root exists \nChecking integrity of First-Level-Structures");
-			home = check.listFiles();
-			System.out.println(home.length);
-			if (home.length == 0) 
-			{
-				this.isBroken = true;
-			}
-			else for (int i = 0; i < Paths.FIRST_LEVEL_CHILDS.length; i++) 
-			{
-					int j = i ;
+			this.rootPath = dir.getPath();
 
-					System.out.println("Looking for File :" + Paths.FIRST_LEVEL_CHILDS[j]);
-
-					File temp = new File(this.homePath + Paths.FIRST_LEVEL_CHILDS[j]);
-					
-					
-					
-					
-					if (	temp.exists() 
-						&&  Pattern.matches("(\\w{0,}\\.{1,}\\w{0,}){1,}",Paths.FIRST_LEVEL_CHILDS[i])) 
-					{
-						
-						System.out.println("Found!");
-					}
-					else if(temp.isDirectory())
-					{
-						System.out.println("Found!");
-					}
-					else
-					{
-						System.out.println("Missmatch: File not found: " + temp.getPath());
-						this.isBroken = true;
-					}
+			System.out.println("Checking directory-Root-Path");
+			File check = new File(this.rootPath);
+		
+			/*
+			 *  If the chosen folder is the destination for the project instead of an instance  
+			 *  create root;
+			 */ 
+			if(!check.getName().equals(Paths.ROOT_NAME) && !check.isDirectory())
+			{
+				File temp = new File(check.getPath() + Paths.sep + Paths.ROOT_NAME);
+				temp.mkdirs();
+				check = temp;
 			}
+		
+			// If the home directory exists proceed to check the child files
+			if (check.exists() && check.isDirectory()) 
+			{
+				root = check.listFiles();
+				isComplete();    
 			
-			if(!this.isBroken) System.out.println("First Level complete");
+				if(!this.isBroken) System.out.println("First Level complete");
 
-		/*
-		 * Wenn der Pfad nicht vollständig ist wird er angelegt
-		 */
-		 if (this.isBroken) {
-				rebase();
+				/*
+				 * If the directory isn't complete, create it  
+				 */
+				if (this.isBroken) {
+					rebase();
+				}
 			}
 		}
-		else
-		{
-			System.out.println("exiting");
-		}
+		System.out.println("done");
 	}
 	
-	
+	/*
+	 * Verifies whether root is complete and stores it in this.isBroken 
+	 */
+	private void isComplete()
+	{
+		System.out.println("Root exists \nChecking integrity of First-Level-Structures");
+		if (root.length == 0) 
+		{
+			this.isBroken = true;
+		}
+		else for (int i = 0; i < Paths.FIRST_LEVEL_CHILDS.length; i++) 
+		{
+				System.out.println("Looking for File :" + Paths.FIRST_LEVEL_CHILDS[i]);
+				
+				File temp = new File(this.rootPath + Paths.FIRST_LEVEL_CHILDS[i]);
+				if (	temp.exists() 
+					&&  Pattern.matches(DirectoryManager.FILE_HAS_TYP_PATTERN ,Paths.FIRST_LEVEL_CHILDS[i]) 
+					&& !temp.isDirectory()) 
+				{
+					System.out.println("Found!");
+				}
+				else if(! Pattern.matches(DirectoryManager.FILE_HAS_TYP_PATTERN ,Paths.FIRST_LEVEL_CHILDS[i]) && temp.isDirectory())
+				{
+					System.out.println("Found!");
+				}
+				else
+				{
+					System.out.println("Missmatch: File not found: " + temp.getPath());
+					this.isBroken = true;
+				}
+		}
+	}
 
 	
 	/*
-	 *  Obens a Dialog for the user to choose a directory
+	 *  Opens a dialog for the user to choose a directory
 	 */
-	public static File askForDirectory() {
-		JFrame a = new JFrame();
+	public static File askForDirectory() 
+	{
 		JFileChooser fc = new JFileChooser();
 		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fc.setAcceptAllFileFilterUsed(false);
@@ -103,23 +113,24 @@ public class DirectoryManager implements FilenameFilter {
 	}
 
 	/*
-	 * 
+	 * Creates all missing files
 	 */
 	private void rebase() {
-		System.out.println("Directory: " + this.homePath + "  is broken \nRebasing");
-		
+		System.out.println("Directory: " + this.rootPath + "  is broken \nRebasing");
+		//Look for missing Files
 		for(int i = 0; i < Paths.FIRST_LEVEL_CHILDS.length;i++)
 		{
-			if(new File(homePath + Paths.FIRST_LEVEL_CHILDS[i]).exists())
+			if(new File(rootPath + Paths.FIRST_LEVEL_CHILDS[i]).exists())
 			{
 				//Do Nothing ??
 			}
 			else
 			{
+				//Create only the missing ones
 				System.out.println("creating: " + Paths.FIRST_LEVEL_CHILDS[i]);
-				File newHome = new File(this.homePath + Paths.FIRST_LEVEL_CHILDS[i]);
+				File newHome = new File(this.rootPath + Paths.FIRST_LEVEL_CHILDS[i]);
 				try {
-					if(Pattern.matches("(\\w{0,}\\.{1,}\\w{0,}){1,}",Paths.FIRST_LEVEL_CHILDS[i]))
+					if(Pattern.matches(DirectoryManager.FILE_HAS_TYP_PATTERN, Paths.FIRST_LEVEL_CHILDS[i]))
 					{
 						newHome.createNewFile();
 					} 
@@ -134,10 +145,4 @@ public class DirectoryManager implements FilenameFilter {
 		}
 	}
 
-	@Override
-	public boolean accept(File dir, String name) {
-		if (dir.isDirectory())
-			return true;
-		return false;
-	}
 }
