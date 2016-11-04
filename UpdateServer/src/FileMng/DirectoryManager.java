@@ -120,22 +120,25 @@ public class DirectoryManager  {
 		//Look for missing Files
 		for(int i = 0; i < Paths.FIRST_LEVEL_CHILDS.length;i++)
 		{
-			if(new File(rootPath + Paths.FIRST_LEVEL_CHILDS[i]).exists())
+			File temp = new File(rootPath + Paths.FIRST_LEVEL_CHILDS[i]);
+			if((temp.exists() && !temp.isDirectory() && Pattern.matches(DirectoryManager.FILE_HAS_TYP_PATTERN, Paths.FIRST_LEVEL_CHILDS[i])
+			 ||(temp.exists() && temp.isDirectory() && !Pattern.matches(DirectoryManager.FILE_HAS_TYP_PATTERN, Paths.FIRST_LEVEL_CHILDS[i] ))))
 			{
 				//Do Nothing ??
 			}
 			else
 			{
 				//Create only the missing ones
-				System.out.println("creating: " + Paths.FIRST_LEVEL_CHILDS[i]);
-				File newHome = new File(this.rootPath + Paths.FIRST_LEVEL_CHILDS[i]);
+				File newHome = temp;
 				try {
 					if(Pattern.matches(DirectoryManager.FILE_HAS_TYP_PATTERN, Paths.FIRST_LEVEL_CHILDS[i]))
 					{
+						System.out.println(("Creating File :") + Paths.FIRST_LEVEL_CHILDS[i]);
 						newHome.createNewFile();
 					} 
 					else
 					{
+						System.out.println(("Creating Directory :") + Paths.FIRST_LEVEL_CHILDS[i]);
 						newHome.mkdirs();
 					}
 				} catch (IOException e) {
