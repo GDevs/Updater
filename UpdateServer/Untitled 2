@@ -1,0 +1,19 @@
+Verbindungen verwalten 
+
+Dateien LESEN empfangen schicken löschen speichern
+
+
+Wir brauchen ne durchdachte Ordnerstrucktur
+
+Ordner : Versionsverzeichnis
+Inhalt : Versions.txt 
+         Subordner mit den jeweiligen versionen 
+
+
+
+
+
+
+
+
+Wie regeln wir die Handhabung der ankommenden Nachrichten --> soll nicht vom precastServer verarbeitet werden 
