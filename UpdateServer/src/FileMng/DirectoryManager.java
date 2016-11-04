@@ -4,6 +4,7 @@ import java.awt.FileDialog;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -51,15 +52,24 @@ public class DirectoryManager implements FilenameFilter {
 
 					File temp = new File(this.homePath + Paths.FIRST_LEVEL_CHILDS[j]);
 					
-					if (temp.exists()) 
+					
+					
+					
+					if (	temp.exists() 
+						&&  Pattern.matches("(\\w{0,}\\.{1,}\\w{0,}){1,}",Paths.FIRST_LEVEL_CHILDS[i])) 
+					{
+						
+						System.out.println("Found!");
+					}
+					else if(temp.isDirectory())
 					{
 						System.out.println("Found!");
-					} 
+					}
 					else
 					{
-					System.out.println("Missmatch: File not found: " + temp.getPath());
-					this.isBroken = true;
-				}
+						System.out.println("Missmatch: File not found: " + temp.getPath());
+						this.isBroken = true;
+					}
 			}
 			
 			if(!this.isBroken) System.out.println("First Level complete");
@@ -96,16 +106,30 @@ public class DirectoryManager implements FilenameFilter {
 	 * 
 	 */
 	private void rebase() {
-		System.out.println("Directory: " + this.homePath + "  is broken /nRebasing");
-
+		System.out.println("Directory: " + this.homePath + "  is broken \nRebasing");
+		
 		for(int i = 0; i < Paths.FIRST_LEVEL_CHILDS.length;i++)
 		{
-			System.out.println("creating: " + Paths.FIRST_LEVEL_CHILDS[0]);
-			File newHome = new File(this.homePath + Paths.FIRST_LEVEL_CHILDS[i]);
-			try {
-				newHome.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
+			if(new File(homePath + Paths.FIRST_LEVEL_CHILDS[i]).exists())
+			{
+				//Do Nothing ??
+			}
+			else
+			{
+				System.out.println("creating: " + Paths.FIRST_LEVEL_CHILDS[i]);
+				File newHome = new File(this.homePath + Paths.FIRST_LEVEL_CHILDS[i]);
+				try {
+					if(Pattern.matches("(\\w{0,}\\.{1,}\\w{0,}){1,}",Paths.FIRST_LEVEL_CHILDS[i]))
+					{
+						newHome.createNewFile();
+					} 
+					else
+					{
+						newHome.mkdirs();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
