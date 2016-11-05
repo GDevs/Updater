@@ -40,7 +40,7 @@ public class UpdateServer implements Runnable {
 	
 	public static void main(String[] args)
 	{
-		DirectoryManager dm = new DirectoryManager();
+		DirectoryManager dm = new DirectoryManager("ServerUpdater");
 		ConnectionManager cm = new ConnectionManager(5555);
 		
 	}

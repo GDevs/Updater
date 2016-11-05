@@ -14,6 +14,7 @@ import javax.swing.JFileChooser;
  */
 public class DirectoryManager  {
 	public static String FILE_HAS_TYP_PATTERN = "([^\\.]{0,}\\.{1,}[^\\.]{0,}){1,}"; //pattern that checks for any '.' in words
+	public String ROOT_NAME;
 	private String rootPath = ""; 
 	private File dir;
 	private File root[];
@@ -25,7 +26,8 @@ public class DirectoryManager  {
 	 * Checks the integrity of the directory and, if broken or incomplete 
 	 * automatically creates all folders etc.
 	 */
-	public DirectoryManager() {
+	public DirectoryManager(String pRoot) {
+		ROOT_NAME = pRoot;
 		System.out.println("waiting for user input...");
 		
 		dir = askForDirectory();         // User chosen directory
@@ -40,11 +42,12 @@ public class DirectoryManager  {
 			 *  If the chosen folder is the destination for the project instead of an instance  
 			 *  create root;
 			 */ 
-			if(!check.getName().equals(Paths.ROOT_NAME) && !check.isDirectory())
+			if(!check.getName().equals(ROOT_NAME) && check.isDirectory())
 			{
-				File temp = new File(check.getPath() + Paths.sep + Paths.ROOT_NAME);
+				File temp = new File(check.getPath() + Paths.sep + ROOT_NAME);
 				temp.mkdirs();
 				check = temp;
+				this.rootPath = check.getAbsolutePath();
 			}
 		
 			// If the home directory exists proceed to check the child files

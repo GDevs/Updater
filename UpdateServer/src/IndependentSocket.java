@@ -45,7 +45,6 @@ public class IndependentSocket extends ServerSocket implements Runnable {
 				} 
 				else 
 				{
-					i--;
 					try {
 						System.out.println("Waiting for connection...");
 						clientSocket = accept();
