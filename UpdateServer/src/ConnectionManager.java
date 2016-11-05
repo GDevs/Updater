@@ -7,6 +7,10 @@ public class ConnectionManager implements MessageListener {
 	private int maxConnections = 5;
 	private IndependentSocket[] connections;
 	
+	
+	/*
+	 * needs proper implementation
+	 */
 	public ConnectionManager(int port)
 	{
 		this.port = port;
